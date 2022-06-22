@@ -22,6 +22,3 @@ Running App that allows you to track your run path using phone location, save th
 I used api from Google Maps API
 
 
-## Screenshots
-
-
