@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Running App</string>
+    <string name="gms_api_key">AIzaSyCZqBAs5gzndtTC9-i2rgvs_A9t_jilqoU</string>
+    <string name="run">Run</string>
+    <string name="settings">Settings</string>
+    <string name="statistics">Statistics</string>
+    <string-array name="filter_options">
+        <item>Date</item>
+        <item>Distance</item>
+        <item>Run time</item>
+        <item>Average speed</item>
+        <item>Calories</item>
+    </string-array>
+</resources>

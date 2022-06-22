@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Projects/RunningApp/app/src/main/res/layout/fragment_runs.xml" value="0.36666666666666664" />
+        <entry key="..\:/Projects/RunningApp/app/src/main/res/layout/fragment_settings.xml" value="0.36666666666666664" />
+        <entry key="..\:/Projects/RunningApp/app/src/main/res/layout/fragment_setup.xml" value="0.36666666666666664" />
+        <entry key="..\:/Projects/RunningApp/app/src/main/res/layout/fragment_statistics.xml" value="0.36666666666666664" />
+        <entry key="..\:/Projects/RunningApp/app/src/main/res/layout/fragment_tracking.xml" value="0.36666666666666664" />
+        <entry key="..\:/Projects/RunningApp/app/src/main/res/layout/item_run.xml" value="0.36666666666666664" />
+        <entry key="..\:/Projects/runningapp/app/src/main/res/drawable/ic_pause_black_24dp.xml" value="0.223" />
+        <entry key="..\:/Projects/runningapp/app/src/main/res/drawable/ic_run.xml" value="0.2235" />
+        <entry key="..\:/Projects/runningapp/app/src/main/res/layout/activity_main.xml" value="0.36666666666666664" />
+        <entry key="..\:/Projects/runningapp/app/src/main/res/layout/fragment_runs.xml" value="0.18802083333333333" />
+        <entry key="..\:/Projects/runningapp/app/src/main/res/layout/fragment_settings.xml" value="0.36666666666666664" />
+        <entry key="..\:/Projects/runningapp/app/src/main/res/layout/fragment_setup.xml" value="0.36666666666666664" />
+        <entry key="..\:/Projects/runningapp/app/src/main/res/layout/fragment_statistics.xml" value="0.36666666666666664" />
+        <entry key="..\:/Projects/runningapp/app/src/main/res/layout/fragment_tracking.xml" value="0.36666666666666664" />
+        <entry key="..\:/Projects/runningapp/app/src/main/res/menu/bottom_nav_menu.xml" value="0.36666666666666664" />
+        <entry key="..\:/Projects/runningapp/app/src/main/res/menu/tracking_fragment_toolbar_menu.xml" value="0.36666666666666664" />
+        <entry key="..\:/Projects/runningapp/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.2235" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>
