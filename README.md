@@ -5,7 +5,7 @@ Running App that allows you to track your run path using phone location, save th
 
 ## Technologies used
 
-- Clean Architecture, MVVM
+- MVVM
 - Location Tracking, Permissions
 - Dependency Injection - Dagger 2
 - Lifecycle Service
