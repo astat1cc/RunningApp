@@ -7,9 +7,8 @@ import com.example.runningapp.repositories.RunsRepository
 import javax.inject.Inject
 
 class StatisticsViewModel @Inject constructor(
-    val repository: RunsRepository
+    private val repository: RunsRepository
 ) : ViewModel() {
-
 
     fun getTotalDistanceStatistics() = repository.getTotalDistanceStatistics()
 

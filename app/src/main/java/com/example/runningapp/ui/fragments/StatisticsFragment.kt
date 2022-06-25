@@ -71,16 +71,22 @@ class StatisticsFragment : Fragment() {
     private fun subscribeToObservers() {
         with(viewModel) {
             getTotalDistanceStatistics().observe(viewLifecycleOwner) {
-                binding.tvTotalDistance.text = it.toString()
+                it?.let { binding.tvTotalDistance.text = it.toString() }
             }
             getTotalRunTimeStatistics().observe(viewLifecycleOwner) {
-                binding.tvTotalTime.text = TrackingUtility.getStopWatchFormatFromMillis(it)
+                it?.let {
+                    binding.tvTotalTime.text = TrackingUtility.getStopWatchFormatFromMillis(it)
+                }
             }
             getTotalAvgSpeedStatistics().observe(viewLifecycleOwner) {
-                binding.tvAverageSpeed.text = it.toString()
+                it?.let {
+                    binding.tvAverageSpeed.text = it.toString()
+                }
             }
             getTotalBurnedCaloriesStatistics().observe(viewLifecycleOwner) {
-                binding.tvTotalCalories.text = it.toString()
+                it?.let {
+                    binding.tvTotalCalories.text = it.toString()
+                }
             }
             getAllRunsSortedByDate().observe(viewLifecycleOwner) { runs ->
                 val allAvgSpeeds = runs.indices.map { i ->
