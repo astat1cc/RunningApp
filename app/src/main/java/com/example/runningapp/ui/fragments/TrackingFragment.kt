@@ -219,28 +219,43 @@ class TrackingFragment : Fragment(), MenuProvider {
 
     private fun moveMapCameraToTheLastCoordinatePosition() {
         if (runSessionPath.isEmpty() || runSessionPath.last().isEmpty()) return
-        val cameraUpdate =
-            CameraUpdateFactory.newLatLngZoom(runSessionPath.last().last(), MAP_CAMERA_ZOOM)
-        googleMap?.moveCamera(cameraUpdate)
+        val cameraUpdate = getDefaultMapCameraZoom()
+        googleMap?.animateCamera(cameraUpdate)
     }
+
+    private fun getDefaultMapCameraZoom() =
+        CameraUpdateFactory.newLatLngZoom(runSessionPath.last().last(), MAP_CAMERA_ZOOM)
 
     private fun zoomMapCameraToSeeWholeRunPath() {
         if (runSessionPath.isEmpty()) return
-        val bounds = LatLngBounds.Builder()
+        val boundsBuilder = LatLngBounds.Builder()
         for (lap in runSessionPath) {
             for (pos in lap) {
-                bounds.include(pos)
+                boundsBuilder.include(pos)
             }
         }
+        val bounds = boundsBuilder.build()
+
         val mapView = binding.mapView
         val padding = (mapView.height * 0.05f).toInt()
-        val cameraUpdate = CameraUpdateFactory.newLatLngBounds(
-            bounds.build(),
-            mapView.width,
-            mapView.height,
-            padding
-        )
+
+        val cameraUpdate = if (isBoundsBigEnough(bounds)) {
+            CameraUpdateFactory.newLatLngBounds(
+                bounds,
+                mapView.width,
+                mapView.height,
+                padding
+            )
+        } else {
+            getDefaultMapCameraZoom()
+        }
         googleMap?.moveCamera(cameraUpdate)
+    }
+
+    private fun isBoundsBigEnough(bounds: LatLngBounds): Boolean {
+        val southwest = bounds.southwest
+        val northeast = bounds.northeast
+        return southwest.latitude - northeast.latitude >= 100
     }
 
     private fun drawLastCoordinatesPairPolyline() {
