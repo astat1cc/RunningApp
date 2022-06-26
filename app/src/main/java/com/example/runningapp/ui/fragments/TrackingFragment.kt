@@ -427,8 +427,8 @@ class TrackingFragment : Fragment(), MenuProvider {
     }
 
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-        when (menuItem.itemId) {
-            R.id.miCancelRun -> showRunCancelingDialog()
+        if (menuItem.itemId == R.id.miCancelRun) {
+             showRunCancelingDialog()
         }
         return true
     }
