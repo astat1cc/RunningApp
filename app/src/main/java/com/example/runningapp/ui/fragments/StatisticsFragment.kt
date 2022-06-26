@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.example.runningapp.R
 import com.example.runningapp.appComponent
 import com.example.runningapp.databinding.FragmentStatisticsBinding
@@ -24,7 +25,8 @@ class StatisticsFragment : Fragment() {
     private lateinit var binding: FragmentStatisticsBinding
 
     @Inject
-    lateinit var viewModel: StatisticsViewModel
+    lateinit var viewModelFactory: StatisticsViewModel.Factory
+    private val viewModel: StatisticsViewModel by viewModels { viewModelFactory }
 
     override fun onCreateView(
         inflater: LayoutInflater,
