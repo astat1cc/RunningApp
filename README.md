@@ -21,4 +21,7 @@ Running App that allows you to track your run path using phone location, save th
 
 I used api from Google Maps API
 
+## Screenshots
 
+
+![1656243626200](https://user-images.githubusercontent.com/94394251/175812475-a59542e9-beb0-451a-a437-45bec8276f4b.jpg)
