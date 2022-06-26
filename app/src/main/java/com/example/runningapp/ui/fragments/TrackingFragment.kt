@@ -56,7 +56,7 @@ class TrackingFragment : Fragment(), MenuProvider {
 
     private var googleMap: GoogleMap? = null
     private var isTracking = false
-    private lateinit var runSessionPath: WholeRunSessionPath
+    private var runSessionPath: WholeRunSessionPath = mutableListOf()
     private var toolbarMenu: Menu? = null
     private var isStarted = false
     private var currentRunTimeInMillis = 0L
@@ -83,12 +83,14 @@ class TrackingFragment : Fragment(), MenuProvider {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentTrackingBinding.inflate(inflater, container, false)
+        Log.d("lifecycle logs", "fragment onCreateView")
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.mapView.onCreate(savedInstanceState)
+        Log.d("lifecycle logs", "fragment onViewCreated")
 
         appComponent.inject(this)
 
@@ -96,8 +98,6 @@ class TrackingFragment : Fragment(), MenuProvider {
 
         binding.mapView.getMapAsync {
             googleMap = it
-            drawAllPolylines()
-            moveMapCameraToTheLastCoordinatePosition()
         }
 
         requestLocationPermissions()
@@ -193,11 +193,13 @@ class TrackingFragment : Fragment(), MenuProvider {
         })
         TrackingService.isTracking.observe(viewLifecycleOwner, Observer {
             updateTrackingStatus(it)
+            Log.d("tag", "is tracking $it")
         })
         TrackingService.wholeRunSessionPath.observe(viewLifecycleOwner, Observer {
             runSessionPath = it
             drawLastCoordinatesPairPolyline()
             moveMapCameraToTheLastCoordinatePosition()
+            Log.d("tag", "new location point")
         })
         TrackingService.runTimeInMillis.observe(viewLifecycleOwner, Observer {
             currentRunTimeInMillis = it
@@ -255,7 +257,8 @@ class TrackingFragment : Fragment(), MenuProvider {
     private fun isBoundsBigEnough(bounds: LatLngBounds): Boolean {
         val southwest = bounds.southwest
         val northeast = bounds.northeast
-        return southwest.latitude - northeast.latitude >= 100
+        return southwest.latitude - northeast.latitude > 60 &&
+                southwest.longitude - northeast.longitude > 60
     }
 
     private fun drawLastCoordinatesPairPolyline() {
@@ -359,6 +362,8 @@ class TrackingFragment : Fragment(), MenuProvider {
     override fun onStart() {
         super.onStart()
         binding.mapView.onStart()
+        drawAllPolylines()
+        moveMapCameraToTheLastCoordinatePosition()
         Log.d("lifecycle logs", "fragment onStart")
     }
 

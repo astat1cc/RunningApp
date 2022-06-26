@@ -11,6 +11,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Looper
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.MutableLiveData
@@ -73,6 +74,7 @@ class TrackingService : LifecycleService() {
             result.locations.forEach { location ->
                 val position = LatLng(location.latitude, location.longitude)
                 addPathPoint(position)
+                Log.d("tag", "new location callback")
             }
         }
     }
@@ -141,18 +143,19 @@ class TrackingService : LifecycleService() {
 
         currentNotificationBuilder = baseNotificationBuilder
 
-        isTracking.observe(this, Observer { isTracking ->
+        isTracking.observe(this) { isTracking ->
             toggleLocationTracking(isTracking)
             toggleTimer(isTracking)
             updateNotificationAction(isTracking)
-        })
-        runTimeInSeconds.observe(this, Observer {
-            if (!isServiceAlive) return@Observer
-            updateNotificationTimerText(it)
-        })
-        isStarted.observe(this, Observer {
+        }
+        runTimeInSeconds.observe(this) {
+            if (isServiceAlive) {
+                updateNotificationTimerText(it)
+            }
+        }
+        isStarted.observe(this) {
             if (it) isServiceAlive = true
-        })
+        }
     }
 
     private fun updateNotificationTimerText(runTimeInSeconds: Int) {
