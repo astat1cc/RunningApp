@@ -8,11 +8,12 @@ Running App that allows you to track your run path using phone location, save th
 - MVVM
 - Location Tracking, Permissions
 - Dependency Injection - Dagger 2
-- Lifecycle Service
+- Foreground Service
 - Room
 - Retrofit, OkHttp
 - Coroutines
 - LiveData
+- Permissions
 - Navigation Component
 - Single Activity
 
