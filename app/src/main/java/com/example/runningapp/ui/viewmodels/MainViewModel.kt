@@ -14,8 +14,8 @@ import kotlinx.coroutines.launch
 import java.lang.Exception
 import javax.inject.Inject
 
-class MainViewModel @Inject constructor(
-    val repository: RunsRepository
+class MainViewModel(
+    private val repository: RunsRepository
 ) : ViewModel() {
 
     val runs = MediatorLiveData<List<Run>>()
@@ -77,4 +77,14 @@ class MainViewModel @Inject constructor(
 
     private fun getAllRunsSortedByBurnedCalories(): LiveData<List<Run>> =
         repository.getAllRunsSortedByBurnedCalories()
+
+
+    class Factory @Inject constructor(
+        private val repository: RunsRepository
+    ) : ViewModelProvider.Factory {
+
+        @Suppress("UNCHECKED_CAST")
+        override fun <T : ViewModel> create(modelClass: Class<T>): T =
+            MainViewModel(repository) as T
+    }
 }

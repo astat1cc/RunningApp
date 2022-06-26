@@ -13,6 +13,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -49,7 +50,8 @@ class TrackingFragment : Fragment(), MenuProvider {
     private lateinit var binding: FragmentTrackingBinding
 
     @Inject
-    lateinit var viewModel: MainViewModel
+    lateinit var viewModelFactory: MainViewModel.Factory
+    private val viewModel: MainViewModel by viewModels { viewModelFactory }
 
     @Inject
     lateinit var sharedPref: SharedPreferences
@@ -132,8 +134,7 @@ class TrackingFragment : Fragment(), MenuProvider {
     }
 
     private fun finishRun() {
-        saveRunToDatabase()
-        closeCurrentRun()
+        saveRunAndQuit()
     }
 
     private fun showSuccessRunSaveSnackbar() {
@@ -144,7 +145,7 @@ class TrackingFragment : Fragment(), MenuProvider {
         ).show()
     }
 
-    private fun saveRunToDatabase() {
+    private fun saveRunAndQuit() {
         val distanceInMeters = TrackingUtility.calculateRunPathDistance(runSessionPath)
         val timeInMillis = currentRunTimeInMillis
         val avgSpeedInKPH =
@@ -164,6 +165,7 @@ class TrackingFragment : Fragment(), MenuProvider {
             )
             viewModel.saveRun(run)
             showSuccessRunSaveSnackbar()
+            closeCurrentRun()
         }
     }
 

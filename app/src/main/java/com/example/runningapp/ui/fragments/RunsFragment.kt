@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -32,7 +33,8 @@ class RunsFragment : Fragment() {
     private lateinit var runsAdapter: RunsAdapter
 
     @Inject
-    lateinit var viewModel: MainViewModel
+    lateinit var viewModelFactory: MainViewModel.Factory
+    private val viewModel: MainViewModel by viewModels { viewModelFactory }
 
     override fun onCreateView(
         inflater: LayoutInflater,
