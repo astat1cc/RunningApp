@@ -1,4 +1,4 @@
-package com.example.runningapp.services
+package com.example.runningapp.service
 
 import android.annotation.SuppressLint
 import android.app.NotificationChannel
@@ -15,7 +15,6 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import com.example.runningapp.R
 import com.example.runningapp.appComponent
@@ -143,6 +142,10 @@ class TrackingService : LifecycleService() {
 
         currentNotificationBuilder = baseNotificationBuilder
 
+        subscribeToObservers()
+    }
+
+    private fun subscribeToObservers() {
         isTracking.observe(this) { isTracking ->
             toggleLocationTracking(isTracking)
             toggleTimer(isTracking)

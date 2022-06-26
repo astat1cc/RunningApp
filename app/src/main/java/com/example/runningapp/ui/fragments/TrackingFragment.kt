@@ -21,8 +21,8 @@ import com.example.runningapp.R
 import com.example.runningapp.appComponent
 import com.example.runningapp.databinding.FragmentTrackingBinding
 import com.example.runningapp.models.Run
-import com.example.runningapp.services.TrackingService
-import com.example.runningapp.services.WholeRunSessionPath
+import com.example.runningapp.service.TrackingService
+import com.example.runningapp.service.WholeRunSessionPath
 import com.example.runningapp.ui.MainActivity
 import com.example.runningapp.ui.viewmodels.MainViewModel
 import com.example.runningapp.utilities.Constants.ACTION_FINISH_TRACKING_SERVICE
@@ -49,7 +49,7 @@ class TrackingFragment : Fragment(), MenuProvider {
     private lateinit var binding: FragmentTrackingBinding
 
     @Inject
-    lateinit var trackingFragmentViewModel: MainViewModel
+    lateinit var viewModel: MainViewModel
 
     @Inject
     lateinit var sharedPref: SharedPreferences
@@ -62,6 +62,9 @@ class TrackingFragment : Fragment(), MenuProvider {
     private var currentRunTimeInMillis = 0L
     private val humanWeight: Float
         get() = sharedPref.getFloat(SHARED_PREFERENCES_USER_WEIGHT_KEY, 70f)
+
+    // indicates if past run path is drawn in case activity was destroyed and fragment recreated
+    private var pastRunPathRendered = false
 
     private lateinit var parentActivity: MainActivity
 
@@ -98,6 +101,11 @@ class TrackingFragment : Fragment(), MenuProvider {
 
         binding.mapView.getMapAsync {
             googleMap = it
+            Log.d("tag", "camera move from getMapAsync")
+            moveMapCameraToTheLastCoordinatePosition()
+            Log.d("tag", "drawAll from getMapAsync")
+            drawAllPolylines()
+            pastRunPathRendered = true
         }
 
         requestLocationPermissions()
@@ -140,7 +148,7 @@ class TrackingFragment : Fragment(), MenuProvider {
         val distanceInMeters = TrackingUtility.calculateRunPathDistance(runSessionPath)
         val timeInMillis = currentRunTimeInMillis
         val avgSpeedInKPH =
-            round((distanceInMeters / 1000.0) / timeInMillis / 1000.0 / 60 / 60 * 10) * 10.0
+            round((distanceInMeters / 1000.0) / (timeInMillis / 1000.0 / 60 / 60) * 10) / 10.0
         val dateTimestamp = Calendar.getInstance().timeInMillis
         val burnedCalories = ((distanceInMeters / 1000f) * humanWeight).toInt()
 
@@ -154,7 +162,7 @@ class TrackingFragment : Fragment(), MenuProvider {
                 dateTimestamp,
                 image = bitmap
             )
-            trackingFragmentViewModel.saveRun(run)
+            viewModel.saveRun(run)
             showSuccessRunSaveSnackbar()
         }
     }
@@ -184,6 +192,7 @@ class TrackingFragment : Fragment(), MenuProvider {
                 .addAll(solidRun)
             googleMap?.addPolyline(polylineOptions)
         }
+        Log.d("tag", "all polylines drawed: ${runSessionPath.joinToString(", ")}")
     }
 
     private fun subscribeToObservers() {
@@ -193,13 +202,14 @@ class TrackingFragment : Fragment(), MenuProvider {
         })
         TrackingService.isTracking.observe(viewLifecycleOwner, Observer {
             updateTrackingStatus(it)
-            Log.d("tag", "is tracking $it")
         })
         TrackingService.wholeRunSessionPath.observe(viewLifecycleOwner, Observer {
+            val isNewFragmentCreated = runSessionPath.isEmpty()
+            val forLogsRunSessionPathCopy = runSessionPath
             runSessionPath = it
-            drawLastCoordinatesPairPolyline()
+            Log.d("tag", "camera move from observe")
             moveMapCameraToTheLastCoordinatePosition()
-            Log.d("tag", "new location point")
+            drawLastCoordinatesPairPolyline()
         })
         TrackingService.runTimeInMillis.observe(viewLifecycleOwner, Observer {
             currentRunTimeInMillis = it
@@ -222,7 +232,14 @@ class TrackingFragment : Fragment(), MenuProvider {
     private fun moveMapCameraToTheLastCoordinatePosition() {
         if (runSessionPath.isEmpty() || runSessionPath.last().isEmpty()) return
         val cameraUpdate = getDefaultMapCameraZoom()
-        googleMap?.animateCamera(cameraUpdate)
+//        val animated =
+            googleMap?.animateCamera(cameraUpdate)
+//            ?.also {
+//            Log.d("tag", "calling drawAll from animate")
+//            if (!pastRunPathRendered) drawAllPolylines()
+//            pastRunPathRendered = true
+//        }
+//        Log.d("tag", "camera $animated")
     }
 
     private fun getDefaultMapCameraZoom() =
@@ -230,15 +247,9 @@ class TrackingFragment : Fragment(), MenuProvider {
 
     private fun zoomMapCameraToSeeWholeRunPath() {
         if (runSessionPath.isEmpty()) return
-        val boundsBuilder = LatLngBounds.Builder()
-        for (lap in runSessionPath) {
-            for (pos in lap) {
-                boundsBuilder.include(pos)
-            }
-        }
-        val bounds = boundsBuilder.build()
 
         val mapView = binding.mapView
+        val bounds = createRunPathBounds()
         val padding = (mapView.height * 0.05f).toInt()
 
         val cameraUpdate = if (isBoundsBigEnough(bounds)) {
@@ -254,10 +265,20 @@ class TrackingFragment : Fragment(), MenuProvider {
         googleMap?.moveCamera(cameraUpdate)
     }
 
+    private fun createRunPathBounds(): LatLngBounds {
+        val boundsBuilder = LatLngBounds.Builder()
+        for (lap in runSessionPath) {
+            for (pos in lap) {
+                boundsBuilder.include(pos)
+            }
+        }
+        return boundsBuilder.build()
+    }
+
     private fun isBoundsBigEnough(bounds: LatLngBounds): Boolean {
         val southwest = bounds.southwest
         val northeast = bounds.northeast
-        return southwest.latitude - northeast.latitude > 60 &&
+        return southwest.latitude - northeast.latitude > 60 ||
                 southwest.longitude - northeast.longitude > 60
     }
 
@@ -363,14 +384,13 @@ class TrackingFragment : Fragment(), MenuProvider {
         super.onStart()
         binding.mapView.onStart()
         drawAllPolylines()
-        moveMapCameraToTheLastCoordinatePosition()
         Log.d("lifecycle logs", "fragment onStart")
     }
 
     override fun onResume() {
         super.onResume()
-        binding.mapView.onResume()
         Log.d("lifecycle logs", "fragment onResume")
+        binding.mapView.onResume()
     }
 
     override fun onPause() {
@@ -432,6 +452,4 @@ class TrackingFragment : Fragment(), MenuProvider {
         super.onDestroyView()
         Log.d("lifecycle logs", "fragment onDestroyView")
     }
-
-
 }

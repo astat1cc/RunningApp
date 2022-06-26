@@ -32,7 +32,7 @@ class RunsFragment : Fragment() {
     private lateinit var runsAdapter: RunsAdapter
 
     @Inject
-    lateinit var runFragmentViewModel: MainViewModel
+    lateinit var viewModel: MainViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -79,14 +79,14 @@ class RunsFragment : Fragment() {
             id: Long
         ) {
             val sortType = SortType.values()[position]
-            runFragmentViewModel.runsSortType.postValue(sortType)
+            viewModel.runsSortType.postValue(sortType)
         }
 
         override fun onNothingSelected(p0: AdapterView<*>?) {}
     }
 
     private fun subscribeToObservers() {
-        with(runFragmentViewModel) {
+        with(viewModel) {
             runs.observe(viewLifecycleOwner) { list ->
                 runsAdapter.submitList(list)
             }

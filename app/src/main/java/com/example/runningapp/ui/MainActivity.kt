@@ -55,6 +55,7 @@ class MainActivity : AppCompatActivity() {
         intent?.let {
             if (it.action == Constants.ACTION_TRACKING_SERVICE_NOTIFICATION_PRESSED) {
                 navHostFragment.navController.navigate(R.id.trackingFragment)
+                it.action = null
             }
         }
     }

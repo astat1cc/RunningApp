@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
 import androidx.core.content.ContextCompat
-import com.example.runningapp.services.WholeRunSessionPath
+import com.example.runningapp.service.WholeRunSessionPath
 
 object TrackingUtility {
 

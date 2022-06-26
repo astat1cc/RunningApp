@@ -26,7 +26,7 @@
         </activity>
 
         <service
-            android:name="com.example.runningapp.services.TrackingService"
+            android:name="com.example.runningapp.service.TrackingService"
             android:foregroundServiceType="location" />
 
         <meta-data

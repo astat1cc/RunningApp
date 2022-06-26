@@ -1,6 +1,6 @@
 package com.example.runningapp.di
 
-import com.example.runningapp.services.TrackingService
+import com.example.runningapp.service.TrackingService
 import com.example.runningapp.ui.MainActivity
 import com.example.runningapp.ui.fragments.*
 import dagger.Component
