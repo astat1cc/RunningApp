@@ -20,8 +20,6 @@ class MainViewModel(
 
     val runs = MediatorLiveData<List<Run>>()
 
-    private lateinit var runsSortedByDate: LiveData<List<Run>>
-
     private val allDifferentlySortedRuns: List<LiveData<List<Run>>>
 
     var runsSortType = MutableLiveData(Constants.DEFAULT_SORT_TYPE)
@@ -42,9 +40,9 @@ class MainViewModel(
 
     private fun MediatorLiveData<List<Run>>.addAllSources() {
         allDifferentlySortedRuns.forEachIndexed { i, sortedRuns ->
-            runs.addSource(sortedRuns) { sortedRunsValue ->
+            addSource(sortedRuns) { sortedRunsValue ->
                 if (runsSortType.value?.index == allDifferentlySortedRuns.indexOf(sortedRuns)) {
-                    runs.postValue(sortedRunsValue)
+                    postValue(sortedRunsValue)
                 }
             }
         }
